@@ -17,9 +17,8 @@ router.post('/movies', auth.enhance, async (req, res) => {
   }
 });
 
-router.get(
+router.post(
   '/movies/photo/:id',
-  auth.enhance,
   upload('movies').single('file'),
   async (req, res, next) => {
     const url = `${req.protocol}://${req.get('host')}`;
@@ -34,6 +33,31 @@ router.get(
       const movie = await Movie.findById(movieId);
       if (!movie) return res.sendStatus(404);
       movie.image = `${url}/${file.path}`;
+      await movie.save();
+      res.send({ movie, file });
+    } catch (e) {
+      console.log(e);
+      res.sendStatus(400).send(e);
+    }
+  }
+);
+
+router.post(
+  '/videos/:id',
+  upload('videos').single('file'),
+  async (req, res, next) => {
+    const url = `${req.protocol}://${req.get('host')}`;
+    const { file } = req;
+    const movieId = req.params.id;
+    try {
+      if (!file) {
+        const error = new Error('Please upload a file');
+        error.httpStatusCode = 400;
+        return next(error);
+      }
+      const movie = await Movie.findById(movieId);
+      if (!movie) return res.sendStatus(404);
+      movie.video = `${url}/${file.path}`;
       await movie.save();
       res.send({ movie, file });
     } catch (e) {

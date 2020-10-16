@@ -22,6 +22,7 @@ class AddMovie extends Component {
   state = {
     title: '',
     image: null,
+    video: null,
     genre: [],
     language: '',
     duration: '',
@@ -72,22 +73,25 @@ class AddMovie extends Component {
     });
   };
 
-  handleFieldChange = (field, value) => {
+  handleFieldChange = (field, value, event) => {
     const newState = { ...this.state };
     newState[field] = value;
     this.setState(newState);
+    if (event && event.target) {
+      event.target.value = null;
+    }
   };
 
   onAddMovie = () => {
-    const { image, genre, ...rest } = this.state;
+    const { image, genre, video, ...rest  } = this.state;
     const movie = { ...rest, genre: genre.join(',') };
-    this.props.addMovie(image, movie);
+    this.props.addMovie(image, video, movie);
   };
 
   onUpdateMovie = () => {
-    const { image, genre, ...rest } = this.state;
+    const { image, genre, video, ...rest } = this.state;
     const movie = { ...rest, genre: genre.join(',') };
-    this.props.updateMovie(this.props.edit._id, movie, image);
+    this.props.updateMovie(this.props.edit._id, movie, image, video);
   };
 
   onRemoveMovie = () => this.props.removeMovie(this.props.edit._id);
@@ -97,6 +101,7 @@ class AddMovie extends Component {
     const {
       title,
       image,
+      video,
       genre,
       language,
       duration,
@@ -259,9 +264,24 @@ class AddMovie extends Component {
             <FileUpload
               className={classes.upload}
               file={image}
+              label={"Image"}
+              reference={"image-button"}
               onUpload={event => {
                 const file = event.target.files[0];
-                this.handleFieldChange('image', file);
+                this.handleFieldChange('image', file, event);
+              }}
+            />
+          </div>
+          <div className={classes.field}>
+            <FileUpload
+              className={classes.upload}
+              file={video}
+              label={"Video"}
+              accept={"video/*"}
+              reference={"video-button"}
+              onUpload={event => {
+                const file = event.target.files[0];
+                this.handleFieldChange('video', file, event);
               }}
             />
           </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames';
 import { Rating } from '@material-ui/lab';
 import {
@@ -8,11 +8,13 @@ import {
   makeStyles,
   withStyles
 } from '@material-ui/core';
-import { textTruncate } from '../../../../utils';
+import { isLoggedIn, textTruncate } from '../../../../utils';
 import { Link } from 'react-router-dom';
 import ArrowRightAlt from '@material-ui/icons/ArrowRightAlt';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import styles from './styles';
+import ResponsiveDialog from '../../../../components/ResponsiveDialog/ResponsiveDialog';
+import MovieWatch from '../MovieWatch/MovieWatch';
 
 const useStyles = makeStyles(styles);
 
@@ -25,10 +27,22 @@ const StyledRating = withStyles({
   }
 })(Rating);
 
+
+
 function MovieBanner(props) {
+
   const { movie, fullDescription } = props;
+  const [ watch, setWatch ] = useState(false);
   const classes = useStyles(props);
   if (!movie) return null;
+
+  const openDialog = () => {
+    setWatch(true);
+  };
+
+  const closeDialog = () => {
+    setWatch(false);
+  };
 
   return (
     <div className={classes.movieHero}>
@@ -60,6 +74,22 @@ function MovieBanner(props) {
             color="inherit">
             {movie.title}
           </Typography>
+          {movie.video && isLoggedIn() && (
+            <Button
+              className={classes.watchMovie}
+              onClick={() => openDialog()}
+              color="primary"
+              size="small"
+              variant="outlined">
+              Watch Movie
+            </Button>
+            )}
+          <ResponsiveDialog
+            id="Edit-movie"
+            open={watch}
+            handleClose={() => closeDialog()}>
+            <MovieWatch movie={movie}/>
+          </ResponsiveDialog>
           <Typography
             className={classes.descriptionText}
             variant="body1"

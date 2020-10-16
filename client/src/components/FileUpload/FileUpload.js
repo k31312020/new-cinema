@@ -19,7 +19,7 @@ const styles = theme => ({
 });
 
 const FileUpload = props => {
-  const { classes, className, file, onUpload } = props;
+  const { classes, className, file, onUpload, accept, label, reference } = props;
   const rootClassName = classNames(
     {
       [classes.root]: true
@@ -30,15 +30,15 @@ const FileUpload = props => {
   return (
     <Paper className={rootClassName}>
       <input
-        accept="image/*"
+        accept={accept}
         className={classes.input}
-        id="icon-button-file"
+        id={reference}
         type="file"
         onChange={onUpload}
       />
-      <label htmlFor="icon-button-file">
+      <label htmlFor={reference}>
         <Button variant="outlined" className={classes.button} component="span">
-          Upload
+          {label}
         </Button>
       </label>
       <span>{file ? file.name : 'No file selected'}</span>
@@ -52,13 +52,18 @@ FileUpload.propTypes = {
   classes: PropTypes.object.isRequired,
   elevation: PropTypes.number,
   outlined: PropTypes.bool,
-  squared: PropTypes.bool
+  squared: PropTypes.bool,
+  accept: PropTypes.string,
+  label: PropTypes.string,
+  reference: PropTypes.string
 };
 
 FileUpload.defaultProps = {
+  accept: "image/*",
   squared: false,
   outlined: true,
-  elevation: 0
+  elevation: 0,
+  label: "upload",
 };
 
 export default withStyles(styles)(FileUpload);

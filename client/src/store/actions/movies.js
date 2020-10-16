@@ -22,6 +22,27 @@ export const uploadMovieImage = (id, image) => async dispatch => {
   }
 };
 
+export const uploadMovieVideo = (id, video) => async dispatch => {
+  try {
+    const data = new FormData();
+    data.append('file', video);
+    const url = '/videos/' + id;
+    const response = await fetch(url, {
+      method: 'POST',
+      body: data
+    });
+    const responseData = await response.json();
+    if (response.ok) {
+      dispatch(setAlert('Movie Uploaded', 'success', 5000));
+    }
+    if (responseData.error) {
+      dispatch(setAlert(responseData.error.message, 'error', 5000));
+    }
+  } catch (error) {
+    dispatch(setAlert(error.message, 'error', 5000));
+  }
+};
+
 export const getMovies = () => async dispatch => {
   try {
     const url = '/movies';
@@ -75,7 +96,7 @@ export const getMovieSuggestion = id => async dispatch => {
   }
 };
 
-export const addMovie = (image, newMovie) => async dispatch => {
+export const addMovie = (image, video, newMovie) => async dispatch => {
   try {
     const token = localStorage.getItem('jwtToken');
     const url = '/movies';
@@ -91,6 +112,7 @@ export const addMovie = (image, newMovie) => async dispatch => {
     if (response.ok) {
       dispatch(setAlert('Movie have been saved!', 'success', 5000));
       if (image) dispatch(uploadMovieImage(movie._id, image));
+      if (video) dispatch(uploadMovieVideo(movie._id, video));
       dispatch(getMovies());
     }
   } catch (error) {
@@ -98,7 +120,7 @@ export const addMovie = (image, newMovie) => async dispatch => {
   }
 };
 
-export const updateMovie = (movieId, movie, image) => async dispatch => {
+export const updateMovie = (movieId, movie, image, video) => async dispatch => {
   try {
     const token = localStorage.getItem('jwtToken');
     const url = '/movies/' + movieId;
@@ -114,6 +136,7 @@ export const updateMovie = (movieId, movie, image) => async dispatch => {
       dispatch(onSelectMovie(null));
       dispatch(setAlert('Movie have been saved!', 'success', 5000));
       if (image) dispatch(uploadMovieImage(movieId, image));
+      if (video) dispatch(uploadMovieVideo(movieId, video));
       dispatch(getMovies());
     }
   } catch (error) {

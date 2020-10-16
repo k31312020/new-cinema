@@ -46,6 +46,11 @@ export default theme => ({
     fontWeight: 400,
     textTransform: 'capitalize'
   },
+  watchMovie: {
+    fontSize: '18px',
+    lineHeight: 1.2,
+    marginTop: theme.spacing(3)
+  },
   director: {
     color: '#9ac7fa',
     fontWeight: '500',

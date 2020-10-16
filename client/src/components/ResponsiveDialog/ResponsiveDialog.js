@@ -23,7 +23,7 @@ const ResponsiveDialog = ({
   return (
     <Dialog
       fullScreen={fullScreen}
-      fullWidth={true}
+      fullWidth={false}
       maxWidth={maxWidth}
       open={open}
       onClose={handleClose}
